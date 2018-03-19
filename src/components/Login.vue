@@ -17,7 +17,12 @@
       }
     },
     methods: {
-        login: function () {            
+        homePage: function () {
+            this.$refs.usrname.value = null;
+            this.$refs.psword.value = null;  
+            this.$router.push({name: 'Home'});
+        },
+        login: function () {                                   
             var authenticationData = {
                 Username : this.$refs.usrname.value,
                 Password : this.$refs.psword.value,
@@ -35,17 +40,21 @@
             };
             var cognitoUser = new cognito.CognitoUser(userData);
             cognitoUser.authenticateUser(authenticationDetails, {
-                onSuccess: function (result) {
+                onSuccess: function (result) {                    
+                    document.getElementById('userMenu').innerHTML = cognitoUser.getUsername();
+                    document.getElementById('userMenu').hidden = false;
+                    document.getElementById('login').hidden = true;
                     cognitoUser.getUserAttributes(function(err, result) {                        
                         for (var i = 0; i < result.length; i++) {
                             console.log('attribute ' + result[i].getName() + ' has value ' + result[i].getValue());
                         }
-                    });
-                },
+                    });                    
+                },                 
                 onFailure: function(err){
                     alert(err.result);
-                }
+                }                
             });
+            this.homePage();
         }
     }
   }
