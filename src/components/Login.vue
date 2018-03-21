@@ -19,7 +19,7 @@
     methods: {
         homePage: function () {
             this.$refs.usrname.value = null;
-            this.$refs.psword.value = null;  
+            this.$refs.psword.value = null;             
             this.$router.push({name: 'Home'});
         },
         login: function () {                                   
@@ -38,17 +38,22 @@
                 Username : this.$refs.usrname.value,
                 Pool : userPool
             };
-            var cognitoUser = new cognito.CognitoUser(userData);
+            var cognitoUser = new cognito.CognitoUser(userData);            
             cognitoUser.authenticateUser(authenticationDetails, {
-                onSuccess: function (result) {                    
-                    document.getElementById('userMenu').innerHTML = cognitoUser.getUsername();
+                onSuccess: function (result) { 
+                    //decode the jwt
+                    var jwt = require('jsonwebtoken');
+                    var decoded = jwt.decode(result.getIdToken().getJwtToken())                                                        
+
+                    //Save username and ID to local storage
+                    localStorage.setItem("username", decoded["cognito:username"]);
+                    localStorage.setItem("userid", decoded["aud"]);      
+                    localStorage.setItem("coguser", cognitoUser);
+                    
+                    //update nav bar
+                    document.getElementById('userMenu').innerHTML = decoded["cognito:username"];
                     document.getElementById('userMenu').hidden = false;
                     document.getElementById('login').hidden = true;
-                    cognitoUser.getUserAttributes(function(err, result) {                        
-                        for (var i = 0; i < result.length; i++) {
-                            console.log('attribute ' + result[i].getName() + ' has value ' + result[i].getValue());
-                        }
-                    });                    
                 },                 
                 onFailure: function(err){
                     alert(err.result);

@@ -17,32 +17,12 @@
                         <a class="nav-link dropdown-toggle" href="#" id="userMenu" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" hidden></a>
                         <div class="dropdown-menu" aria-labelledby="userMenu">
                             <a class="dropdown-item" href="#">Profile</a>
-                            <a class="dropdown-item" href="#">Log Out</a>                            
+                            <a class="dropdown-item" href="#" v-on:click="logoutClick">Log Out</a>                            
                         </div>
                     </li>
                 </ul>
             </div>
-        </nav>
-        <!-- <nav class="navbar navbar-expand-lg navbar-light bg-light">
-            <ul class="navbar-nav mr-auto">
-            <a class="navbar-brand" href="#">Group Feeds</a>  
-            <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
-                <div class="navbar-nav">
-                    <a ref="homeButton" class="nav-item nav-link active" href="#" v-on:click="homeClick">Home <span class="sr-only">(current)</span></a>    
-                    <a class="nav-item nav-link" href="#" v-on:click="loginClick" id="loginButton">Login</a>
-                    <a class="nav-item nav-link" href="#" v-on:click="homeClick" id="userButton" hidden></a>                        
-                    <div class="nav-item dropdown">
-                        <a class="nav-link dropdown-toggle" href="#" id="userButton" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" hidden></a>
-                        <div class="dropdown-menu" aria-labelledby="userButton">
-                            <a class="dropdown-item" href="#">Action</a>
-                            <a class="dropdown-item" href="#">Another action</a>
-                            <div class="dropdown-divider"></div>
-                            <a class="dropdown-item" href="#">Something else here</a>
-                        </div>
-                    </div>
-                </div>
-            </div> 
-        </nav> -->        
+        </nav>              
     </div>     
 </template>
 
@@ -53,9 +33,41 @@ export default {
       loginClick: function () {                  
           this.$router.push({name: 'Login'});
       },
-      homeClick: function () {          
+      logoutClick: function () {
+          var cognito = require('amazon-cognito-identity-js');
+          var poolData = {
+              UserPoolId : window._config.cognito.userPoolId,
+              ClientId: window._config.cognito.userPoolClientId
+          };
+          
+          var userPool = new cognito.CognitoUserPool(poolData);
+          var cognitoUser = userPool.getCurrentUser();
+          
+          if (cognitoUser != null) {
+                cognitoUser.getSession(function(err, session) {
+                    if (err) {
+                        alert(err);
+                        return;
+                    }
+                    localStorage.clear();
+                    cognitoUser.signOut();  
+                    document.getElementById('userMenu').hidden = true;
+                    document.getElementById('login').hidden = false;          
+                });
+            }
+            this.$router.push({name: 'Home'});        
+      },
+      homeClick: function () {                        
           this.$router.push({name: 'Home'});
       }
+  },
+  mounted: function () {      
+      if(localStorage.getItem("username") != null){
+          document.getElementById('userMenu').hidden = false;
+          document.getElementById('login').hidden = true;
+          document.getElementById('userMenu').innerHTML = localStorage.getItem("username");
+      }
+      
   }
 }
 </script>
