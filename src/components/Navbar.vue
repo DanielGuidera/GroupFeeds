@@ -12,11 +12,14 @@
                     </li>
                     <li class="nav-item">
                         <a class="nav-link" href="#" v-on:click="loginClick" id="login">Login</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#" v-on:click="newuserClick" id="newuser">New User</a>
                     </li>                   
                     <li class="nav-item dropdown">
                         <a class="nav-link dropdown-toggle" href="#" id="userMenu" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" hidden></a>
                         <div class="dropdown-menu" aria-labelledby="userMenu">
-                            <a class="dropdown-item" href="#">Profile</a>
+                            <a class="dropdown-item" href="#" v-on:click="profileClick">Profile</a>
                             <a class="dropdown-item" href="#" v-on:click="logoutClick">Log Out</a>                            
                         </div>
                     </li>
@@ -50,15 +53,22 @@ export default {
                         return;
                     }
                     localStorage.clear();
-                    cognitoUser.signOut();  
+                    cognitoUser.signOut();
                     document.getElementById('userMenu').hidden = true;
-                    document.getElementById('login').hidden = false;          
+                    document.getElementById('login').hidden = false;
+                    document.getElementById('newuser').hidden = false;
                 });
             }
             this.$router.push({name: 'Home'});        
       },
+      profileClick: function () {
+          this.$router.push({name: 'Profile'});
+      },
       homeClick: function () {                        
           this.$router.push({name: 'Home'});
+      },
+      newuserClick: function () {
+          this.$router.push({name: 'Newuser'})
       }
   },
   mounted: function () {      

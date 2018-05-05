@@ -37,6 +37,6 @@ window._config = {
       invokeUrl: '' // e.g. https://rc7nyt4tql.execute-api.us-west-2.amazonaws.com/prod',
   },
   userInfo: {
-    userName: 'no user'
+    userName: ''
   }
 };
