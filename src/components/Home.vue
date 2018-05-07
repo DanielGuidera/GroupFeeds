@@ -1,7 +1,7 @@
 <template>
   <div class="home">
     <h1>{{ msg }}</h1>
-    <button > Create Account  </button>
+    <button v-on:click="checkForCredentials"> Create Account  </button>
   </div>
 </template>
 
@@ -14,12 +14,12 @@
       }
     },
     methods: {          
-      checkForCredentials: function () {           
-        var result = localStorage;
-        console.log(result);
-        if(result == null){
-          this.$router.push({name: 'Newuser'})
-        }                                       
+      checkForCredentials: function () {         
+        console.log("Session data is: "+document.cookie);
+        
+        // if(result == null){
+        //   this.$router.push({name: 'Newuser'})
+        // }                                       
       }
       
     },

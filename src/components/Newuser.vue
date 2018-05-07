@@ -123,6 +123,7 @@ export default {
           }          
       },
       login: function () {  
+          debugger;
             $("#loginModal").modal('toggle');                                 
             var authenticationData = {
                 Username : this.$refs.l_username.value,
@@ -141,10 +142,13 @@ export default {
             };
             var cognitoUser = new cognito.CognitoUser(userData);            
             cognitoUser.authenticateUser(authenticationDetails, {
-                onSuccess: function (result) {                                    
+                onSuccess: function (result, homePage) {                                                                         
                     //decode the jwt
                     var jwt = require('jsonwebtoken');
-                    var decoded = jwt.decode(result.getIdToken().getJwtToken());     
+                    var decoded = jwt.decode(result.getIdToken().getJwtToken());  
+                    
+                    document.cookie = "jwt="+result.getIdToken().getJwtToken()+";";     
+                    console.log("Session data is: "+document.cookie);               
                     
                     //Store User name
                     localStorage.setItem("loggedIn", true);
@@ -155,13 +159,19 @@ export default {
                     document.getElementById('userMenu').innerHTML = decoded["cognito:username"];
                     document.getElementById('userMenu').hidden = false;
                     document.getElementById('login').hidden = true;
-                    document.getElementById('newuser').hidden = true;                   
+                    document.getElementById('newuser').hidden = true;  
+                    
+                    debugger;
+                    
+                    // window.$refs.l_username.value = null;
+                    // window.$refs.l_password.value = null;             
+                    window.$router.push({name: 'Home'});
                 },                 
                 onFailure: function(err){
                     alert(err.result);
+                    // homePage();
                 }                
-            });
-            this.homePage();
+            });            
         },
         homePage: function () {
             this.$refs.l_username.value = null;
