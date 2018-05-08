@@ -17,16 +17,19 @@
       checkForCredentials: function () {  
         try{
           // debugger;
-          // var cognito = require('amazon-cognito-identity-js');            
-          // var userPool = new cognito.CognitoUserPool(window._config.cognito);
-          console.log(window._config);
+          var poolData = {  
+            UserPoolId: 'eu-west-1_Kh2zLTkDO',
+            ClientId: '4i5u4ot6enb7em4m66pcp4gbud',      
+          }
+          var cognito = require('amazon-cognito-identity-js');            
+          var userPool = new cognito.CognitoUserPool(poolData);          
 
-          // var userData = {
-          //   Username : localStorage.userName,
-          //   Pool : userPool
-          // };
+          var userData = {
+            Username : localStorage.userName,
+            Pool : userPool
+          };
 
-          // var cognitoUser = new cognito.CognitoUser(userData);    
+          var cognitoUser = new cognito.CognitoUser(userData);    
         } 
         catch(err){
           console.log(err);

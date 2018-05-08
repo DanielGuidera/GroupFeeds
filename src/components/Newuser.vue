@@ -162,7 +162,8 @@ export default {
                     // console.log(x)                                                                      ;
                     //decode the jwt
                     var jwt = require('jsonwebtoken');
-                    var decoded = jwt.decode(result.getIdToken().getJwtToken());                      
+                    var decoded = jwt.decode(result.getIdToken().getJwtToken());      
+                    console.log(result)                ;
                     
                     //Store User name
                     localStorage.setItem("loggedIn", true);
