@@ -12,6 +12,11 @@ const router = new Router({
   routes: [
     {
       path: '/',
+      name: 'Newuser',
+      component: NewUser
+    },
+    {
+      path: '/Home',
       name: 'Home',
       component: Home
     },    
@@ -24,12 +29,7 @@ const router = new Router({
       path: '/profile',
       name: 'Profile',
       component: Profile
-    },
-    {
-      path: '/Newuser',
-      name: 'Newuser',
-      component: NewUser
-    }
+    }    
   ]
 })
 

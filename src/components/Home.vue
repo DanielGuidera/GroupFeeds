@@ -14,8 +14,16 @@
       }
     },
     methods: {          
-      checkForCredentials: function () {         
-        console.log("Session data is: "+localStorage.userName);
+      checkForCredentials: function () {   
+        var cognito = require('amazon-cognito-identity-js');  
+        var userPool = new cognito.CognitoUserPool(window._config.cognito);
+
+        var userData = {
+          Username : localStorage.userName,
+          Pool : userPool
+        };
+
+        var cognitoUser = new cognito.CognitoUser(userData);         
         
         // if(result == null){
         //   this.$router.push({name: 'Newuser'})

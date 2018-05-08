@@ -92,14 +92,10 @@ export default {
           var confirmed_psw = this.$refs.n_confirmpassword.value;
           debugger;
 
-          if(psw == confirmed_psw){
-              var poolData = {
-                UserPoolId : window._config.cognito.userPoolId,
-                ClientId : window._config.cognito.userPoolClientId
-            };
+          if(psw == confirmed_psw){             
 
             var cognito = require('amazon-cognito-identity-js');
-            var userPool = new cognito.CognitoUserPool(poolData);
+            var userPool = new cognito.CognitoUserPool(window._config.cognito);
 
             var attributeList = [];
 
@@ -107,6 +103,7 @@ export default {
                 Name : 'email',
                 Value : email
             };
+          
             
             var attributeEmail = new cognito.CognitoUserAttribute(dataEmail);            
 
@@ -119,37 +116,49 @@ export default {
                 }
                 cognitoUser = result.user;
                 console.log('user name is ' + cognitoUser.getUsername());
-            });
-          }          
+            });    
+          }
+          else{
+              alert("Passwords do not match");
+          }                                    
       },
-      login: function () {                     
-          var refs = this.$refs;
-          var router = this.$router;
-          var homePage = () => {                          
+      login: function () {
+        var refs = this.$refs;
+        var router = this.$router;   
+
+        var clearFields = () => {
             refs.l_username.value = null;
-            refs.l_password.value = null;             
+            refs.l_password.value = null;
+        }   
+
+        var homePage = () => {
+            clearFields();             
             router.push({name: 'Home'});
-          };         
-          
-            $("#loginModal").modal('toggle');                                 
-            var authenticationData = {
-                Username : this.$refs.l_username.value,
-                Password : this.$refs.l_password.value,
-            };
-            var cognito = require('amazon-cognito-identity-js');
-            var authenticationDetails = new cognito.AuthenticationDetails(authenticationData);
-            var poolData = {
-                UserPoolId : window._config.cognito.userPoolId,
-                ClientId: window._config.cognito.userPoolClientId
-            };
-            var userPool = new cognito.CognitoUserPool(poolData);
+        };
+        
+        $("#loginModal").modal('toggle');   
+
+        var authenticationData = {
+            Username : this.$refs.l_username.value,
+            Password : this.$refs.l_password.value,
+        };
+
+        var cognito = require('amazon-cognito-identity-js');
+        var authenticationDetails = new cognito.AuthenticationDetails(authenticationData);
+        // var poolData = {
+        //     UserPoolId : window._config.cognito.userPoolId,
+        //     ClientId: window._config.cognito.userPoolClientId
+        // };
+
+            var userPool = new cognito.CognitoUserPool(window._config.cognito);
             var userData = {
                 Username : this.$refs.l_username.value,
                 Pool : userPool
             };
+
             var cognitoUser = new cognito.CognitoUser(userData);            
             cognitoUser.authenticateUser(authenticationDetails, {
-                onSuccess: (result) => {   
+                onSuccess: (result) => {                     
                     // console.log(x)                                                                      ;
                     //decode the jwt
                     var jwt = require('jsonwebtoken');
@@ -162,28 +171,18 @@ export default {
                     
                     //update nav bar
                     document.getElementById('userMenu').innerHTML = decoded["cognito:username"];
-                    document.getElementById('userMenu').hidden = false;
-                    document.getElementById('login').hidden = true;
-                    document.getElementById('newuser').hidden = true;  
+                    document.getElementById('userMenu').hidden = false;                    
+                    document.getElementById('newuser').hidden = true;                                          
                     
-                    debugger;
-                    
-                    homePage();
-                    // window.$refs.l_username.value = null;
-                    // window.$refs.l_password.value = null;             
-                    // window.$router.push({name: 'Home'});
+                    homePage();                    
                 },                 
-                onFailure: function(err){
-                    alert(err.result);
-                    homePage();
+                onFailure: function(err){ 
+                    debugger;                                                           
+                    alert(err.message);
+                    clearFields();                                                                            
                 }                
             });            
-        },
-        homePage: function () {
-            this.$refs.l_username.value = null;
-            this.$refs.l_password.value = null;             
-            this.$router.push({name: 'Home'});
-        }
+        }        
   }
 }
 </script>

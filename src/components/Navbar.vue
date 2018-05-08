@@ -9,10 +9,7 @@
                 <ul class="navbar-nav">
                     <li class="nav-item active">
                         <a class="nav-link" href="#" v-on:click="homeClick">Home <span class="sr-only">(current)</span></a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="#" v-on:click="loginClick" id="login">Login</a>
-                    </li>
+                    </li>                    
                     <li class="nav-item">
                         <a class="nav-link" href="#" v-on:click="newuserClick" id="newuser">New User</a>
                     </li>                   
@@ -38,12 +35,12 @@ export default {
       },
       logoutClick: function () {
           var cognito = require('amazon-cognito-identity-js');
-          var poolData = {
-              UserPoolId : window._config.cognito.userPoolId,
-              ClientId: window._config.cognito.userPoolClientId
-          };
+        //   var poolData = {
+        //       UserPoolId : window._config.cognito.userPoolId,
+        //       ClientId: window._config.cognito.userPoolClientId
+        //   };
           
-          var userPool = new cognito.CognitoUserPool(poolData);
+          var userPool = new cognito.CognitoUserPool(window._config.cognito);
           var cognitoUser = userPool.getCurrentUser();
           
           if (cognitoUser != null) {
@@ -54,12 +51,12 @@ export default {
                     }
                     localStorage.clear();
                     cognitoUser.signOut();
-                    document.getElementById('userMenu').hidden = true;
-                    document.getElementById('login').hidden = false;
+                    document.getElementById('userMenu').hidden = true;                    
                     document.getElementById('newuser').hidden = false;
                 });
             }
-            this.$router.push({name: 'Home'});        
+
+            this.$router.push({name: 'Newuser'});        
       },
       profileClick: function () {
           this.$router.push({name: 'Profile'});

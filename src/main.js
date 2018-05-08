@@ -9,8 +9,6 @@ import 'bootstrap/dist/css/bootstrap.css'
 import 'bootstrap-vue/dist/bootstrap-vue.css'
 import VueSession from 'vue-session'
 
-debugger;
-
 Vue.use(VueSession)
 Vue.use(BootstrapVue);
 
@@ -33,9 +31,8 @@ new Vue({
 
 window._config = {
   cognito: {
-      userPoolId: 'eu-west-1_Kh2zLTkDO',
-      userPoolClientId: '4i5u4ot6enb7em4m66pcp4gbud',
-      region: 'eu-west-1'
+    UserPoolId: 'eu-west-1_Kh2zLTkDO',
+    ClientId: '4i5u4ot6enb7em4m66pcp4gbud',      
   },
   api: {
       invokeUrl: '' // e.g. https://rc7nyt4tql.execute-api.us-west-2.amazonaws.com/prod',
