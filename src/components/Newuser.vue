@@ -122,8 +122,15 @@ export default {
             });
           }          
       },
-      login: function () {  
-          debugger;
+      login: function () {                     
+          var refs = this.$refs;
+          var router = this.$router;
+          var homePage = () => {                          
+            refs.l_username.value = null;
+            refs.l_password.value = null;             
+            router.push({name: 'Home'});
+          };         
+          
             $("#loginModal").modal('toggle');                                 
             var authenticationData = {
                 Username : this.$refs.l_username.value,
@@ -142,13 +149,11 @@ export default {
             };
             var cognitoUser = new cognito.CognitoUser(userData);            
             cognitoUser.authenticateUser(authenticationDetails, {
-                onSuccess: function (result, homePage) {                                                                         
+                onSuccess: (result) => {   
+                    // console.log(x)                                                                      ;
                     //decode the jwt
                     var jwt = require('jsonwebtoken');
-                    var decoded = jwt.decode(result.getIdToken().getJwtToken());  
-                    
-                    document.cookie = "jwt="+result.getIdToken().getJwtToken()+";";     
-                    console.log("Session data is: "+document.cookie);               
+                    var decoded = jwt.decode(result.getIdToken().getJwtToken());                      
                     
                     //Store User name
                     localStorage.setItem("loggedIn", true);
@@ -163,13 +168,14 @@ export default {
                     
                     debugger;
                     
+                    homePage();
                     // window.$refs.l_username.value = null;
                     // window.$refs.l_password.value = null;             
-                    window.$router.push({name: 'Home'});
+                    // window.$router.push({name: 'Home'});
                 },                 
                 onFailure: function(err){
                     alert(err.result);
-                    // homePage();
+                    homePage();
                 }                
             });            
         },

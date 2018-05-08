@@ -15,7 +15,7 @@
     },
     methods: {          
       checkForCredentials: function () {         
-        console.log("Session data is: "+document.cookie);
+        console.log("Session data is: "+localStorage.userName);
         
         // if(result == null){
         //   this.$router.push({name: 'Newuser'})
