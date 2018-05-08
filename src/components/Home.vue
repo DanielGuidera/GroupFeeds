@@ -14,20 +14,24 @@
       }
     },
     methods: {          
-      checkForCredentials: function () {   
-        var cognito = require('amazon-cognito-identity-js');  
-        var userPool = new cognito.CognitoUserPool(window._config.cognito);
+      checkForCredentials: function () {  
+        try{
+          // debugger;
+          // var cognito = require('amazon-cognito-identity-js');            
+          // var userPool = new cognito.CognitoUserPool(window._config.cognito);
+          console.log(window._config);
 
-        var userData = {
-          Username : localStorage.userName,
-          Pool : userPool
-        };
+          // var userData = {
+          //   Username : localStorage.userName,
+          //   Pool : userPool
+          // };
 
-        var cognitoUser = new cognito.CognitoUser(userData);         
-        
-        // if(result == null){
-        //   this.$router.push({name: 'Newuser'})
-        // }                                       
+          // var cognitoUser = new cognito.CognitoUser(userData);    
+        } 
+        catch(err){
+          console.log(err);
+           this.$router.push({name: 'Newuser'})
+        }                                                                  
       }
       
     },
