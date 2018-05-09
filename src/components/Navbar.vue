@@ -43,17 +43,11 @@ export default {
           var userPool = new cognito.CognitoUserPool(poolData);
           var cognitoUser = userPool.getCurrentUser();
           
-          if (cognitoUser != null) {
-                cognitoUser.getSession(function(err, session) {
-                    if (err) {
-                        alert(err);
-                        return;
-                    }
-                    // localStorage.clear();
-                    cognitoUser.signOut();
-                    document.getElementById('userMenu').hidden = true;                    
-                    document.getElementById('newuser').hidden = false;
-                });
+          if (cognitoUser != null) {                
+                localStorage.clear();
+                cognitoUser.signOut();
+                document.getElementById('userMenu').hidden = true;                    
+                document.getElementById('newuser').hidden = false;                
             }
 
             this.$router.push({name: 'Newuser'});        

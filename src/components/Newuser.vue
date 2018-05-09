@@ -68,19 +68,6 @@
     </div>
 </div>
 </div> 
-<!--container end.//-->
-  <!-- <div id="newuser">
-      <form id="newuserform">
-        Username: <input ref="n_username" placeholder="user name">
-        <br/>
-        Email: <input ref="n_email" placeholder="email">
-        <br/>
-        Password: <input ref="n_password" type="password" placeholder="password">
-        <br/>
-        Confirm Password: <input ref="n_confirmpassword" type="password" placeholder="confirm password">  
-        <button v-on:click="createClick" id="createUser">Create</button>
-      </form>             
-  </div> -->
 </template>
 <script>
 export default {
@@ -107,22 +94,43 @@ export default {
             
             var attributeEmail = new cognito.CognitoUserAttribute(dataEmail);            
 
-            attributeList.push(attributeEmail);            
+            attributeList.push(attributeEmail);    
 
-            userPool.signUp(username, psw, attributeList, null, function(err, result){
-                if (err) {
-                    alert(err);
-                    return;
-                }
-                cognitoUser = result.user;
-                console.log('user name is ' + cognitoUser.getUsername());
-            });    
+            userPool.signUp(username, psw, attributeList, null, {
+                onSuccess: (result) => {
+                    cognitoUser = result.user;
+                    console.log('user name is ' + cognitoUser.getUsername());
+                    this.$router.push({name: 'Newuser'})
+                },                 
+                onFailure: function(err){                     
+                    if(err.message != 200){
+                        alert(err.message);
+                    }
+                    else{
+                        alert(err);
+                    }
+                    
+                    clearFields();                                                                            
+                }  
+
+            });      
+
+            // userPool.signUp(username, psw, attributeList, null, (err, result) => {
+            //     if (err) {
+            //         alert(err.message);
+            //         return;
+            //     }
+            //     cognitoUser = result.user;
+            //     console.log('user name is ' + cognitoUser.getUsername());
+            //     this.$router.push({name: 'Newuser'})
+            // });    
           }
           else{
               alert("Passwords do not match");
+              this.$router.push({name: 'Newuser'})
           }                                    
       },
-      login: function () {
+      login: function () {          
             var refs = this.$refs;
             var router = this.$router;   
 
@@ -160,11 +168,7 @@ export default {
             cognitoUser.authenticateUser(authenticationDetails, {
                 onSuccess: (result) => {                                           
                     var jwt = require('jsonwebtoken');
-                    var decoded = jwt.decode(result.getIdToken().getJwtToken());                          
-                    
-                    //Store User name
-                    localStorage.setItem("loggedIn", true);
-                    localStorage.setItem("userName", decoded["cognito:username"])                                                               
+                    var decoded = jwt.decode(result.getIdToken().getJwtToken());                                                                                                                                                   
                     
                     //update nav bar
                     document.getElementById('userMenu').innerHTML = decoded["cognito:username"];

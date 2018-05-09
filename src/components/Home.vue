@@ -1,8 +1,12 @@
 <template>
-  <div class="home">
-    <h1>{{ msg }}</h1>
-    <button v-on:click="checkForCredentials"> Create Account  </button>
+  <div class="container">
+    <div class="card bg-light">
+        <article class="card-body mx-auto" style="max-width: 400px;">
+            <h4 class="card-title mt-3 text-center">You are not signed up to any groups</h4>
+        </article>
+    </div>
   </div>
+    
 </template>
 
 <script>
@@ -14,27 +18,19 @@
       }
     },
     methods: {          
-      checkForCredentials: function () {  
-        try{
-          // debugger;
-          var poolData = {  
-            UserPoolId: 'eu-west-1_Kh2zLTkDO',
-            ClientId: '4i5u4ot6enb7em4m66pcp4gbud'
-          }
-          var cognito = require('amazon-cognito-identity-js');            
-          var userPool = new cognito.CognitoUserPool(poolData);          
+      checkForCredentials: function () {                   
+        var cognito = require('amazon-cognito-identity-js');
+        var poolData = {  
+            UserPoolId: process.env.UserPoolId,
+            ClientId: process.env.ClientId   
+        }
 
-          var userData = {
-            Username : localStorage.userName,
-            Pool : userPool
-          };
+        var userPool = new cognito.CognitoUserPool(poolData);                                 
+        var cognitoUser = userPool.getCurrentUser();                      
 
-          var cognitoUser = new cognito.CognitoUser(userData);    
-        } 
-        catch(err){
-          console.log(err);
-           this.$router.push({name: 'Newuser'})
-        }                                                                  
+        if(!cognitoUser){
+          this.$router.push({name: 'Newuser'})      
+        }
       }
       
     },
