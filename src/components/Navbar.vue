@@ -34,13 +34,13 @@ export default {
           this.$router.push({name: 'Login'});
       },
       logoutClick: function () {
-          var cognito = require('amazon-cognito-identity-js');
-        //   var poolData = {
-        //       UserPoolId : window._config.cognito.userPoolId,
-        //       ClientId: window._config.cognito.userPoolClientId
-        //   };
+            var cognito = require('amazon-cognito-identity-js');
+            var poolData = {  
+                UserPoolId: process.env.UserPoolId,
+                ClientId: process.env.ClientId   
+            }
           
-          var userPool = new cognito.CognitoUserPool(window._config.cognito);
+          var userPool = new cognito.CognitoUserPool(poolData);
           var cognitoUser = userPool.getCurrentUser();
           
           if (cognitoUser != null) {
@@ -49,7 +49,7 @@ export default {
                         alert(err);
                         return;
                     }
-                    localStorage.clear();
+                    // localStorage.clear();
                     cognitoUser.signOut();
                     document.getElementById('userMenu').hidden = true;                    
                     document.getElementById('newuser').hidden = false;

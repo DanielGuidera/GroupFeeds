@@ -123,52 +123,48 @@ export default {
           }                                    
       },
       login: function () {
-        var refs = this.$refs;
-        var router = this.$router;   
+            var refs = this.$refs;
+            var router = this.$router;   
 
-        var clearFields = () => {
-            refs.l_username.value = null;
-            refs.l_password.value = null;
-        }   
+            var clearFields = () => {
+                refs.l_username.value = null;
+                refs.l_password.value = null;
+            }   
 
-        var homePage = () => {
-            clearFields();             
-            router.push({name: 'Home'});
-        };
-        
-        $("#loginModal").modal('toggle');   
+            var homePage = () => {
+                clearFields();             
+                router.push({name: 'Home'});
+            };
+            
+            $("#loginModal").modal('toggle');   
 
-        var authenticationData = {
-            Username : this.$refs.l_username.value,
-            Password : this.$refs.l_password.value,
-        };
+            var authenticationData = {
+                Username : this.$refs.l_username.value,
+                Password : this.$refs.l_password.value,
+            };
 
-        var cognito = require('amazon-cognito-identity-js');
-        var authenticationDetails = new cognito.AuthenticationDetails(authenticationData);
-        // var poolData = {
-        //     UserPoolId : window._config.cognito.userPoolId,
-        //     ClientId: window._config.cognito.userPoolClientId
-        // };
+            var cognito = require('amazon-cognito-identity-js');
+            var authenticationDetails = new cognito.AuthenticationDetails(authenticationData);
+            var poolData = {  
+                UserPoolId: process.env.UserPoolId,
+                ClientId: process.env.ClientId   
+            }
 
-            var userPool = new cognito.CognitoUserPool(window._config.cognito);
+            var userPool = new cognito.CognitoUserPool(poolData);
             var userData = {
                 Username : this.$refs.l_username.value,
                 Pool : userPool
             };
-
+            
             var cognitoUser = new cognito.CognitoUser(userData);            
             cognitoUser.authenticateUser(authenticationDetails, {
-                onSuccess: (result) => {                     
-                    // console.log(x)                                                                      ;
-                    //decode the jwt
+                onSuccess: (result) => {                                           
                     var jwt = require('jsonwebtoken');
-                    var decoded = jwt.decode(result.getIdToken().getJwtToken());      
-                    console.log(result)                ;
+                    var decoded = jwt.decode(result.getIdToken().getJwtToken());                          
                     
                     //Store User name
                     localStorage.setItem("loggedIn", true);
-                    localStorage.setItem("userName", decoded["cognito:username"])
-                    localStorage.setItem("token", JSON.stringify(decoded));                                           
+                    localStorage.setItem("userName", decoded["cognito:username"])                                                               
                     
                     //update nav bar
                     document.getElementById('userMenu').innerHTML = decoded["cognito:username"];
@@ -177,9 +173,14 @@ export default {
                     
                     homePage();                    
                 },                 
-                onFailure: function(err){ 
-                    debugger;                                                           
-                    alert(err.message);
+                onFailure: function(err){                     
+                    if(err.message != 200){
+                        alert(err.message);
+                    }
+                    else{
+                        alert(err);
+                    }
+                    
                     clearFields();                                                                            
                 }                
             });            

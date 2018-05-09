@@ -8,13 +8,13 @@
                     <div class="input-group-prepend">
                         <span class="input-group-text"> <i class="fa fa-user"></i> </span>
                     </div>
-                    <input ref="n_username" class="form-control" placeholder="User name" type="text" readonly>
+                    <input id="p_username" class="form-control" placeholder="User name" type="text" readonly>
                 </div> <!-- form-group// -->    
                 <div class="form-group input-group">
                     <div class="input-group-prepend">
                         <span class="input-group-text"> <i class="fa fa-envelope"></i> </span>
                     </div>
-                    <input ref="n_email" class="form-control" placeholder="Email address" type="email" readonly>
+                    <input id="p_email" class="form-control" placeholder="Email address" type="email" readonly>
                 </div> <!-- form-group// -->                        
             </form>
         </article>
@@ -31,40 +31,29 @@
             }
         },
         methods: {
-            getAttributes: function () {                                             
+            getAttributes: function () {                
                 var cognito = require('amazon-cognito-identity-js');
                 var poolData = {  
-                    UserPoolId: 'eu-west-1_Kh2zLTkDO',
-                    ClientId: '4i5u4ot6enb7em4m66pcp4gbud',      
+                    UserPoolId: process.env.UserPoolId,
+                    ClientId: process.env.ClientId   
                 }
                 
                 var userPool = new cognito.CognitoUserPool(poolData);                                 
-
-                var cognitoUser = userPool.getCurrentUser();   
-                debugger;             
-                
-                cognitoUser.getUserAttributes(function(err, result) {
-                    debugger;
+                var cognitoUser = userPool.getCurrentUser();                                       
+                cognitoUser.getSession(function(err, session){
                     if(err){
-                        alert(err.message);
+                        alert(err.message || JSON.stringify(err));
+                        return;
                     }
                     
-                    for (i = 0; i < result.length; i++) {
-                        console.log('attribute ' + result[i].getName() + ' has value ' + result[i].getValue());
-                    }
-                });                
-                
-                // document.getElementById("p_username").innerHTML = localStorage.getItem("username");
-                // document.getElementById("p_email").innerHTML = attr["email"];
-
-                // cognitoUser.getUserAttributes(function(err, result){
-                //     if(err){
-                //         alert(err);
-                //         return;
-                //     }
-                //     console.log(result);
-                // });
-                }
+                    var jwt = require('jsonwebtoken');
+                    var decoded = jwt.decode(session.idToken.jwtToken);
+                    console.log(decoded.email);
+                    document.getElementById("p_email").value = decoded.email;                    
+                    document.getElementById("p_username").value = decoded["cognito:username"];
+                    
+                });                                                                            
+            }
         },
         mounted: function () {            
             this.getAttributes();
