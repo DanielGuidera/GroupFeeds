@@ -30,7 +30,7 @@
                     <input ref="n_confirmpassword" class="form-control" placeholder="Repeat password" type="password">
                 </div> <!-- form-group// -->                                      
                 <div class="form-group">
-                    <button class="btn btn-primary btn-block" v-on:click="createClick"> Create Account  </button>
+                    <button type="button" class="btn btn-primary btn-block" v-on:click="createClick"> Create Account  </button>
                 </div> <!-- form-group// -->      
                 <p class="text-center">Have an account? <a href="#loginModal" data-toggle="modal">Log In</a> </p>                                                                 
             </form>
