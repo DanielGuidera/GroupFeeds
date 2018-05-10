@@ -63,11 +63,36 @@ export default {
       }
   },
   mounted: function () {      
-      if(localStorage.getItem("username") != null){
-          document.getElementById('userMenu').hidden = false;
-          document.getElementById('login').hidden = true;
-          document.getElementById('userMenu').innerHTML = localStorage.getItem("username");
-      }
+        var cognito = require('amazon-cognito-identity-js');
+        var poolData = {  
+            UserPoolId: process.env.UserPoolId,
+            ClientId: process.env.ClientId   
+        }
+
+        var userPool = new cognito.CognitoUserPool(poolData);                                 
+        var cognitoUser = userPool.getCurrentUser();                      
+
+        if(cognitoUser){            
+            document.getElementById('userMenu').hidden = false;   
+            document.getElementById('newuser').hidden = true;  
+            cognitoUser.getSession(function(err, session){
+                if(err){
+                    alert(err.message || JSON.stringify(err));
+                    logoutClick();
+                    return;
+                }
+                
+                var jwt = require('jsonwebtoken');
+                var decoded = jwt.decode(session.idToken.jwtToken);
+                document.getElementById('userMenu').innerHTML = decoded["cognito:username"];
+                
+            });                      
+        }
+    //   if(localStorage.getItem("username") != null){
+    //       document.getElementById('userMenu').hidden = false;
+    //       document.getElementById('login').hidden = true;
+    //       document.getElementById('userMenu').innerHTML = localStorage.getItem("username");
+    //   }
       
   }
 }

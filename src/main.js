@@ -12,7 +12,6 @@ import VueSession from 'vue-session'
 Vue.use(VueSession)
 Vue.use(BootstrapVue);
 
-console.log("main.js");
 Vue.config.productionTip = false
 
 /* eslint-disable no-new */
